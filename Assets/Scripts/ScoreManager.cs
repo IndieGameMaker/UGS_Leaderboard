@@ -1,11 +1,17 @@
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using Unity.Services.Core;
 using Unity.Services.Authentication;
 using Unity.Services.Leaderboards;
+using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
+    [Header("UI")] 
+    [SerializeField] private TMP_InputField _scoreIF;
+    [SerializeField] private Button _scoreSaveButton;
+    
     private async void Awake()
     {
         // 유니티 서비스 초기화
