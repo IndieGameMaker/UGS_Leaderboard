@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using Unity.Services.Core;
@@ -9,23 +10,33 @@ public class RCManager : MonoBehaviour
     [SerializeField] private float move_speed;
     [SerializeField] private float rotate_speed;
     [SerializeField] private int gold;
-    
-    private async Task Awake()
+
+    private async void Awake()
     {
         await UnityServices.InitializeAsync();
-
+    }
+    
+    private async void Start()
+    {
         // 로그인 이벤트 연결
         AuthenticationService.Instance.SignedIn += () =>
         {
             Debug.Log($"로그인 성공: PlayerID: {AuthenticationService.Instance.PlayerId}");
-        };
+        };        
         
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        await GetRemoteConfigData();
+    }
 
+    private void OnEnable()
+    {
         // Remote Config 에서 데이터 패치가 완료되었을 때 호출되는 이벤트 연결
         RemoteConfigService.Instance.FetchCompleted += OnFetchRemoteConfig;
-        
-        await GetRemoteConfigData();
+    }
+
+    private void OnDisable()
+    {
+        RemoteConfigService.Instance.FetchCompleted -= OnFetchRemoteConfig;
     }
 
     private void OnFetchRemoteConfig(ConfigResponse obj)
