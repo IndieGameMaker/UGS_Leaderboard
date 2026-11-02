@@ -11,6 +11,9 @@ public class RCManager : MonoBehaviour
     [SerializeField] private float rotate_speed;
     [SerializeField] private int gold;
 
+    [SerializeField] private float body_scale;
+    [SerializeField] private Transform _mummy;
+
     private async void Awake()
     {
         await UnityServices.InitializeAsync();
@@ -45,6 +48,9 @@ public class RCManager : MonoBehaviour
         move_speed = RemoteConfigService.Instance.appConfig.GetFloat("move_speed");
         rotate_speed = RemoteConfigService.Instance.appConfig.GetFloat("rotate_speed");
         gold = RemoteConfigService.Instance.appConfig.GetInt("gold");
+        body_scale = RemoteConfigService.Instance.appConfig.GetFloat("body_scale");
+        
+        _mummy.localScale = Vector3.one * body_scale;
     }
 
     // Filter 역할
