@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using TMPro;
@@ -5,6 +6,7 @@ using UnityEngine;
 using Unity.Services.Core;
 using Unity.Services.Authentication;
 using Unity.Services.Leaderboards;
+using Unity.Services.Leaderboards.Models;
 using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
@@ -51,12 +53,22 @@ public class ScoreManager : MonoBehaviour
         _scoreIF.text = response.Score.ToString();
     }
 
+    public List<LeaderboardEntry> entries = new List<LeaderboardEntry>();
+    
     private async Task GetAllScore()
     {
         var response = await LeaderboardsService.Instance.GetScoresAsync(LEADERBOARD_ID);
         Debug.Log($"Json: " + JsonConvert.SerializeObject(response));
         Debug.Log("점수 조회 완료");
-        
+
+        entries = response.Results;
+
+        string rank = "";
+        foreach (var entry in entries)
+        {
+            rank += $"[{entry.Rank + 1}] {entry.PlayerId} : {entry.Score}\n";
+        }
+        Debug.Log(rank);        
     }
     
     // 버튼 이벤트 연결 메서드
