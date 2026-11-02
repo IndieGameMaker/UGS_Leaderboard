@@ -21,5 +21,25 @@ public class RCManager : MonoBehaviour
         };
         
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
+        // Remote Config 에서 데이터 패치가 완료되었을 때 호출되는 이벤트 연결
+        RemoteConfigService.Instance.FetchCompleted += OnFetchRemoteConfig;
+        
+        await GetRemoteConfigData();
     }
+
+    private void OnFetchRemoteConfig(ConfigResponse obj)
+    {
+        
+    }
+
+    // Filter 역할
+    public struct userAttr {};
+    public struct appAttr {};
+
+    private async Task GetRemoteConfigData()
+    {
+        await RemoteConfigService.Instance.FetchConfigsAsync(new userAttr(), new appAttr());
+    }
+    
 }
