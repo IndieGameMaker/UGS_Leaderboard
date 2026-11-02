@@ -30,7 +30,10 @@ public class RCManager : MonoBehaviour
 
     private void OnFetchRemoteConfig(ConfigResponse obj)
     {
-        
+        Debug.Log("Remote Config 데이터 패치 완료");
+        move_speed = RemoteConfigService.Instance.appConfig.GetFloat("move_speed");
+        rotate_speed = RemoteConfigService.Instance.appConfig.GetFloat("rotate_speed");
+        gold = RemoteConfigService.Instance.appConfig.GetInt("gold");
     }
 
     // Filter 역할
