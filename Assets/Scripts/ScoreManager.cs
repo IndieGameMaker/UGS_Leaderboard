@@ -13,6 +13,10 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] private TMP_InputField _scoreIF;
     [SerializeField] private Button _scoreSaveButton;
     [SerializeField] private Button _fetchAllScoreButton;
+    [SerializeField] private Button _deleteUserButton;
+
+    [SerializeField] private Button _pageScoreButton;
+    [SerializeField] private TMP_InputField _pageIF;
 
     private const string LEADERBOARD_ID = "Ranking";
     
@@ -34,7 +38,7 @@ public class ScoreManager : MonoBehaviour
             string playerId = AuthenticationService.Instance.PlayerId;
             Debug.Log($"로그인 완료: {playerId}");
 
-            await GetPlayerScores();
+            //await GetPlayerScores();
         };
         
         // 익명 로그인 요청
@@ -60,6 +64,21 @@ public class ScoreManager : MonoBehaviour
     {
         _scoreSaveButton.onClick.AddListener(async () => await AddScore());
         _fetchAllScoreButton.onClick.AddListener(async () => await GetAllScore());
+        _deleteUserButton.onClick.AddListener(async () =>
+        {
+            await AuthenticationService.Instance.DeleteAccountAsync();
+            Debug.Log("로그인 유저 삭제 완료");
+        });
+        
+        _pageScoreButton.onClick.AddListener(async () =>
+        {
+            int pageIdx = int.Parse(_pageIF.text) * 5;
+            // Offset : 건너뛰는 갯수 / Limit : 추출 갯수
+            // Offset = Limit * pageIdx
+            var scoreOptions = new GetScoresOptions { Offset = pageIdx, Limit = 5};
+            var response = await LeaderboardsService.Instance.GetScoresAsync(LEADERBOARD_ID,scoreOptions);
+            Debug.Log(JsonConvert.SerializeObject(response));
+        });
     }
 
     private async Task AddScore()
@@ -68,4 +87,8 @@ public class ScoreManager : MonoBehaviour
         var response = await LeaderboardsService.Instance.AddPlayerScoreAsync(LEADERBOARD_ID, score);
         Debug.Log(JsonConvert.SerializeObject(response));
     }
+    // 1, 2, 3, 4, 5, 6
 }
+
+
+// 1,2,3,4,5
